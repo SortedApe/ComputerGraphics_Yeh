@@ -24,7 +24,7 @@ public float distance(Vector3 a, Vector3 b) {
 
 boolean pnpoly(float x, float y, Vector3[] vertexes) {
     // TODO HW2 
-    // You need to check the coordinate p(x,v) if inside the vertexes. 
+    // You need to check the coordinate p(x,v) if inside the vertices. 
     // If yes return true, vice versa.
 
     return false;
@@ -34,15 +34,15 @@ public Vector3[] findBoundBox(Vector3[] v) {
     
     
     // TODO HW2 
-    // You need to find the bounding box of the vertexes v.
+    // You need to find the bounding box of the vertices v.
     // r1 -------
     //   |   /\  |
     //   |  /  \ |
     //   | /____\|
     //    ------- r2
 
-    Vector3 recordminV = new Vector3(1.0 / 0.0);
-    Vector3 recordmaxV = new Vector3(-1.0 / 0.0);
+    Vector3 recordminV = new Vector3(0);
+    Vector3 recordmaxV = new Vector3(999);
     Vector3[] result = { recordminV, recordmaxV };
     return result;
 
@@ -58,8 +58,8 @@ public Vector3[] Sutherland_Hodgman_algorithm(Vector3[] points, Vector3[] bounda
     // TODO HW2
     // You need to implement the Sutherland Hodgman Algorithm in this section.
     // The function you pass 2 parameter. One is the vertexes of the shape "points".
-    // And the other is the vertexes of the "boundary".
-    // The output is the vertexes of the polygon.
+    // And the other is the vertices of the "boundary".
+    // The output is the vertices of the polygon.
 
     output = input;
 

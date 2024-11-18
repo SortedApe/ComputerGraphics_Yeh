@@ -20,7 +20,7 @@ Vector3 lookat;
 void setup() {
     size(1000, 600);
     renderer_size = new Vector4(20, 50, 520, 550);
-    cam_position = new Vector3(0, -5, -5);
+    cam_position = new Vector3(0, 0, -10);
     lookat = new Vector3(0, 0, 0);
     setDepthBuffer();
     main_camera = new Camera();
@@ -41,7 +41,7 @@ void draw() {
     background(255);
 
     engine.run();
-
+    cameraControl();
 }
 
 String selectFile() {
@@ -59,10 +59,11 @@ String selectFile() {
     return "";
 }
 
-void cameraControl() {
-    // TODO HW3
+void cameraControl(){
     // You can write your own camera control function here.
-    // Use setPositionOrientation(Vector3 position, Vector3 lookat) to modify the ViewMatrix.
-    // Hint: Use keyboard event and mouse click event to change the position of the camera.
+    // Use setPositionOrientation(Vector3 position,Vector3 lookat) to modify the ViewMatrix.
+    // Hint : Use keyboard event and mouse click event to change the position of the camera.       
+        
+    main_camera.setPositionOrientation(cam_position, new Vector3(0,0,1));
 
 }

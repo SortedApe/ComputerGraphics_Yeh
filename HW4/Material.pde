@@ -3,6 +3,7 @@ public abstract class Material {
     Shader shader;
 
     Material() {
+        // TODO HW4
         // In the Material, pass the relevant attribute variables and uniform variables
         // you need.
         // In the attribute variables, include relevant variables about vertices,
@@ -91,8 +92,9 @@ public class GroundMaterial extends Material {
     Vector4[][] vertexShader(Triangle triangle, Matrix4 M) {
         Matrix4 MVP = main_camera.Matrix().mult(M);
         Vector3[] position = triangle.verts;
-
-        // pass the uniform you need into the shader. (HW4)
+        
+        // TODO HW4
+        // pass the uniform you need into the shader.
 
         Vector4[][] r = shader.vertex.main(new Object[] { position }, new Object[] { MVP });
         return r;

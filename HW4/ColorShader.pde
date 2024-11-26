@@ -92,7 +92,7 @@ public class GroundVertexShader extends VertexShader {
 
         Vector4[] gl_Position = new Vector4[3];
 
-        // To - Do(HW4)
+        // TODO HW4
         // Here you must complete Ground shading.
         // We have instantiated the relevant Material, and you may be missing some
         // variables.

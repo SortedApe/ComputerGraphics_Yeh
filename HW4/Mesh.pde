@@ -283,7 +283,7 @@ class Triangle {
 
     @Override
     public String toString() {
-        String s = "Verties: \n";
+        String s = "Vertices: \n";
         for (Vector3 v : verts) {
             s += v.toString() + "\n";
         }

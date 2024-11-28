@@ -143,7 +143,7 @@ class Mesh {
                 }
             }
         }
-
+        if(normals.size()==0)calcNormal();
         //calcTangent();
     }
 
@@ -196,6 +196,27 @@ class Mesh {
         }
     }
 
+    void calcNormal() {
+        Vector3[] normal = new Vector3[verts.size()];
+        for (int i=0; i<normal.length; i+=1) {
+            normal[i] = new Vector3();
+        }
+        for (int i=0; i<triangles.size(); i+=1) {
+            for (int j=0; j<3; j+=1) {
+                normal[triangles.get(i).triangle[j]].plus(triangles.get(i).normal[j]);
+            }
+        }
+
+        for (int i=0; i<normal.length; i+=1) {
+            normals.add(normal[i].unit_vector());
+        }
+        for (int i=0; i<triangles.size(); i+=1) {
+            for (int j=0; j<3; j+=1) {
+                triangles.get(i).normal[j] = normals.get(triangles.get(i).triangle[j]);
+            }
+        }
+    }
+
     void Draw() {
     }
     void debudDraw() {
@@ -216,9 +237,15 @@ class Mesh {
         Vector3 v3=verts.get(c);
         Vector3[] vs={v1, v2, v3};
         Vector3[] normal=new Vector3[3];
-        for (int i=0; i<3; i+=1) {
-            Vector3 n=Vector3.cross(Vector3.sub(vs[(i+1)%3], vs[i]), Vector3.sub(vs[(i+2)%3], vs[i])).unit_vector();
-            normal[i]=n;
+        if (normals.size()==0) {
+            for (int i=0; i<3; i+=1) {
+                Vector3 n=Vector3.cross(Vector3.sub(vs[(i+1)%3], vs[i]), Vector3.sub(vs[(i+2)%3], vs[i])).unit_vector();
+                normal[i]=n;
+            }
+        }else{
+            normal[0] = (a >= 0 && a < normals.size()) ? normals.get(a) : new Vector3(0, 0, 0);
+            normal[1] = (b >= 0 && b < normals.size()) ? normals.get(b) : new Vector3(0, 0, 0);
+            normal[2] = (c >= 0 && c < normals.size()) ? normals.get(c) : new Vector3(0, 0, 0);
         }
         if (uvs.size()>=1) {
             Vector3[] us={uvs.get(at), uvs.get(bt), uvs.get(ct)};
@@ -258,7 +285,7 @@ class Triangle {
 
     @Override
         public String toString() {
-        String s="Verties: \n";
+        String s="Vertices: \n";
         for (Vector3 v : verts) {
             s+=v.toString()+"\n";
         }

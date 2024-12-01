@@ -228,7 +228,7 @@ public class Inspector {
                             break;
                         case FM:
                             gameObject.me = MaterialEnum.GM;
-                            gameObject.material = new GroundMaterial();
+                            gameObject.material = new GouraudMaterial();
                             materialButton.name = "GouraudMaterial";
                             break;
                         case GM:

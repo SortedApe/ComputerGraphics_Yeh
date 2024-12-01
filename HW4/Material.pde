@@ -84,9 +84,9 @@ public class FlatMaterial extends Material {
     }
 }
 
-public class GroundMaterial extends Material {
-    GroundMaterial() {
-        shader = new Shader(new GroundVertexShader(), new GroundFragmentShader());
+public class GouraudMaterial extends Material {
+    GouraudMaterial() {
+        shader = new Shader(new GouraudVertexShader(), new GouraudFragmentShader());
     }
 
     Vector4[][] vertexShader(Triangle triangle, Matrix4 M) {

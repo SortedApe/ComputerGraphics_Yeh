@@ -1,6 +1,52 @@
 public void CGLine(float x1, float y1, float x2, float y2) {
     // TODO HW1
     // Please paste your code from HW1 CGLine.
+    // TODO HW1
+    // You need to implement the "line algorithm" in this section.
+    // You can use the function line(x1, y1, x2, y2); to verify the correct answer.
+    // However, remember to comment out before you submit your homework.
+    // Otherwise, you will receive a score of 0 for this part.
+    // Utilize the function drawPoint(x, y, color) to apply color to the pixel at
+    // coordinates (x, y).
+    // For instance: drawPoint(114, 514, color(255, 0, 0)); signifies drawing a red
+    // point at (114, 514).
+    // Note that we will be dealing with octants
+    float dx = abs(x2 - x1); 
+    float dy = abs(y2 -y1);
+    int sx = x2 > x1 ? 1 : -1; // deal with  
+    int sy = y2 > y1 ? 1 : -1;
+    boolean in45 = dx > dy ? true : false; // in 45 means that we use x as our moving axis
+    
+    //decide the octant (0 - 45)
+    float x = x1, y = y1;
+    if(in45){
+      float d = dy - (dx/2);
+      while(x2 != x){
+        drawPoint((int)x, (int)y, color(0,0,0));
+        if(d < 0){
+          //pick e
+          d += dy;
+        }else{
+          d += dy - dx;
+          y+= sy;
+        }
+        x += sx;
+      }
+        
+    }
+    else{
+      float  d = dx - (dy/2);
+      while(y2 != y){
+        drawPoint((int)x, (int)y, color(0,0,0));
+          if(d < 0){
+            d += dx; 
+          }else{
+            d +=  dx -dy;
+            x += sx;
+          }
+          y += sy; 
+        }
+    }
 
 }
 

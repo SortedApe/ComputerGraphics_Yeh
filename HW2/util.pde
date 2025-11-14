@@ -11,43 +11,36 @@ public void CGLine(float x1, float y1, float x2, float y2) {
     // For instance: drawPoint(114, 514, color(255, 0, 0)); signifies drawing a red
     // point at (114, 514).
     // Note that we will be dealing with octants
-    float dx = abs(x2 - x1); 
-    float dy = abs(y2 -y1);
+    int dx = (int)abs(x2 - x1); 
+    int dy = (int)abs(y2 -y1);
     int sx = x2 > x1 ? 1 : -1; // deal with  
     int sy = y2 > y1 ? 1 : -1;
-    boolean in45 = dx > dy ? true : false; // in 45 means that we use x as our moving axis
     
     //decide the octant (0 - 45)
-    float x = x1, y = y1;
-    if(in45){
-      float d = dy - (dx/2);
-      while(x2 != x){
-        drawPoint((int)x, (int)y, color(0,0,0));
-        if(d < 0){
-          //pick e
-          d += dy;
-        }else{
-          d += dy - dx;
-          y+= sy;
-        }
-        x += sx;
-      }
-        
-    }
-    else{
-      float  d = dx - (dy/2);
-      while(y2 != y){
-        drawPoint((int)x, (int)y, color(0,0,0));
-          if(d < 0){
-            d += dx; 
-          }else{
-            d +=  dx -dy;
+    int x = round(x1), y = round(y1);
+    if (dx > dy) { // x is driving axis
+    int d = 2*dy - dx; // Bresenham's decision variable
+      for (int i = 0; i <= dx; i++) {
+            drawPoint(x, y, color(0,0,0));
+            if (d > 0) {
+                y += sy;
+                d -= 2*dx;
+            }
+            d += 2*dy;
             x += sx;
-          }
-          y += sy; 
         }
-    }
-
+    } else { // y is driving axis
+        int d = 2*dx - dy;
+        for (int i = 0; i <= dy; i++) {
+            drawPoint(x, y, color(0,0,0));
+            if (d > 0) {
+                x += sx;
+                d -= 2*dy;
+            }
+            d += 2*dx;
+            y += sy;
+        }
+}
 }
 
 public boolean outOfBoundary(float x, float y) {
@@ -72,8 +65,22 @@ boolean pnpoly(float x, float y, Vector3[] vertexes) {
     // TODO HW2 
     // You need to check the coordinate p(x,v) if inside the vertices. 
     // If yes return true, vice versa.
+    int count = 0;
+    int n = vertexes.length;
+    for(int i = 0; i< n;  i++){
+        Vector3 p1, p2;
+        p1  =  vertexes[i];
+        p2 = vertexes[(i+1)%n];
+        if((y<  p1.y) != (y<p2.y)){
+          float decision = ( (y - p1.y) * (p2.x - p1.x) ) / (p2.y - p1.y) + p1.x;
+          if(x  < decision){
+            count ++;
+          }
+        }
+        
+    }
 
-    return false;
+    return count%2 ==1;
 }
 
 public Vector3[] findBoundBox(Vector3[] v) {
@@ -89,9 +96,45 @@ public Vector3[] findBoundBox(Vector3[] v) {
 
     Vector3 recordminV = new Vector3(0);
     Vector3 recordmaxV = new Vector3(999);
+    float minX, minY, minZ;
+    float maxX, maxY, maxZ;
+    minX = minY = minZ = Float.MIN_VALUE;
+    maxX = maxY = maxZ  = Float.MAX_VALUE;
+    for(Vector3 vec : v){
+      minX = min(vec.x, minX);
+      minY = min(vec.y, minY);
+      minZ = min(vec.z,  minZ);
+      maxX = max(vec.x, maxX);
+      maxY = max(vec.y, maxY);
+      maxZ = max(vec.z, maxZ);
+      
+    }
+    
     Vector3[] result = { recordminV, recordmaxV };
     return result;
 
+}
+public boolean inside(Vector3 p, Vector3 a, Vector3 b) {
+    return (b.x - a.x)*(p.y - a.y) - (b.y - a.y)*(p.x - a.x) <= 0;
+}
+Vector3 intersection(Vector3 p, Vector3 q, Vector3 a, Vector3 b) {
+    float A1 = q.y - p.y;
+    float B1 = p.x - q.x;
+    float C1 = A1 * p.x + B1 * p.y;
+
+    float A2 = b.y - a.y;
+    float B2 = a.x - b.x;
+    float C2 = A2 * a.x + B2 * a.y;
+
+    float det = A1 * B2 - A2 * B1;
+    if (Math.abs(det) < 1e-6) {
+        return p; // Lines are parallel, return one point arbitrarily
+    }
+
+    float x = (B2 * C1 - B1 * C2) / det;
+    float y = (A1 * C2 - A2 * C1) / det;
+
+    return new Vector3(x, y, 0);
 }
 
 public Vector3[] Sutherland_Hodgman_algorithm(Vector3[] points, Vector3[] boundary) {
@@ -100,18 +143,47 @@ public Vector3[] Sutherland_Hodgman_algorithm(Vector3[] points, Vector3[] bounda
     for (int i = 0; i < points.length; i += 1) {
         input.add(points[i]);
     }
-
+    
     // TODO HW2
     // You need to implement the Sutherland Hodgman Algorithm in this section.
     // The function you pass 2 parameter. One is the vertexes of the shape "points".
     // And the other is the vertices of the "boundary".
     // The output is the vertices of the polygon.
-
+    int n  = points.length;
+    int bn = boundary.length;
+    for(int i = 0; i< bn; i++){
+      Vector3 b1 = boundary[i];
+      Vector3 b2 = boundary[(i+1)%bn];
+      output.clear();
+      n = input.size();
+      for(int j =0; j< n;j++){
+          Vector3 p1 = input.get(j);
+          Vector3 p2 = input.get((j+1)%n);
+          boolean p1Inside = inside(p1,  b1, b2);
+          boolean p2Inside = inside(p2, b1, b2);
+          if(p1Inside&& p2Inside){
+            output.add(p2);
+            
+          }
+          else if(p1Inside && !p2Inside){
+            Vector3 inter = intersection(p1,p2,b1, b2);
+            output.add(inter);
+          }
+          else if(!p1Inside && p2Inside){
+            Vector3 inter = intersection(p1,p2,b1, b2);
+            output.add(inter);
+            output.add(p2);
+          }
+        
+        
+      }
+      input = new ArrayList<Vector3>(output);
+    }
     output = input;
-
     Vector3[] result = new Vector3[output.size()];
     for (int i = 0; i < result.length; i += 1) {
         result[i] = output.get(i);
     }
+    
     return result;
 }

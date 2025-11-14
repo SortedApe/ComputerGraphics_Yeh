@@ -48,6 +48,10 @@ static class Matrix4{
      // TODO HW2
      // You need to implement the rotation of z-axis matrix here. (Yaw)
     makeIdentity();
+    m[0]  = cos(a); m[1]  = -sin(a); m[2]  = 0.0f; m[3]  = 0.0f;
+     m[4]  = sin(a); m[5]  = cos(a); m[6]  = 0.0f; m[7]  = 0.0f;
+     m[8]  = 0.0f; m[9]  = 0.0f; m[10] = 1; m[11] = 0.0f;
+     m[12] = 0.0f; m[13] = 0.0f; m[14] = 0.0f; m[15] = 1.0f;
 
   }
   
@@ -63,7 +67,11 @@ static class Matrix4{
   void makeScale(Vector3 s) {
     // TODO HW2
     // You need to implement the scale matrix here.
-    makeIdentity();
+
+    m[0]  = s.x; m[1]  = 0.0f; m[2]  = 0.0f; m[3]  = 0.0f;
+     m[4]  = 0.0f; m[5]  = s.y; m[6]  = 0.0f; m[7]  = 0.0f;
+     m[8]  = 0.0f; m[9]  = 0.0f; m[10] = s.z; m[11] = 0.0f;
+     m[12] = 0.0f; m[13] = 0.0f; m[14] = 0.0f; m[15] = 1.0f;
   }
   
   void makeMirror(){

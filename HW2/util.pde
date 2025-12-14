@@ -1,6 +1,46 @@
 public void CGLine(float x1, float y1, float x2, float y2) {
-    stroke(0);
-    line(x1, y1, x2, y2);
+    // TODO HW1
+    // Please paste your code from HW1 CGLine.
+    // TODO HW1
+    // You need to implement the "line algorithm" in this section.
+    // You can use the function line(x1, y1, x2, y2); to verify the correct answer.
+    // However, remember to comment out before you submit your homework.
+    // Otherwise, you will receive a score of 0 for this part.
+    // Utilize the function drawPoint(x, y, color) to apply color to the pixel at
+    // coordinates (x, y).
+    // For instance: drawPoint(114, 514, color(255, 0, 0)); signifies drawing a red
+    // point at (114, 514).
+    // Note that we will be dealing with octants
+    int dx = (int)abs(x2 - x1); 
+    int dy = (int)abs(y2 -y1);
+    int sx = x2 > x1 ? 1 : -1; // deal with  
+    int sy = y2 > y1 ? 1 : -1;
+    
+    //decide the octant (0 - 45)
+    int x = round(x1), y = round(y1);
+    if (dx > dy) { // x is driving axis
+    int d = 2*dy - dx; // Bresenham's decision variable
+      for (int i = 0; i <= dx; i++) {
+            drawPoint(x, y, color(0,0,0));
+            if (d > 0) {
+                y += sy;
+                d -= 2*dx;
+            }
+            d += 2*dy;
+            x += sx;
+        }
+    } else { // y is driving axis
+        int d = 2*dx - dy;
+        for (int i = 0; i <= dy; i++) {
+            drawPoint(x, y, color(0,0,0));
+            if (d > 0) {
+                x += sx;
+                d -= 2*dy;
+            }
+            d += 2*dx;
+            y += sy;
+        }
+}
 }
 
 public boolean outOfBoundary(float x, float y) {
@@ -22,9 +62,9 @@ public float distance(Vector3 a, Vector3 b) {
 }
 
 boolean pnpoly(float x, float y, Vector3[] vertexes) {
-    // TODO HW2
-    // You need to check the coordinate p(x,v) if inside the vertexes.
-    
+    // TODO HW2 
+    // You need to check the coordinate p(x,v) if inside the vertices. 
+    // If yes return true, vice versa.
     int count = 0;
     int n = vertexes.length;
     for(int i = 0; i< n;  i++){
@@ -43,32 +83,36 @@ boolean pnpoly(float x, float y, Vector3[] vertexes) {
     return count%2 ==1;
 }
 
-public Vector3[] findBoundBox(Vector3[] v) {    
-    // TODO HW2
-    // You need to find the bounding box of the vertexes v.
+public Vector3[] findBoundBox(Vector3[] v) {
+    
+    
+    // TODO HW2 
+    // You need to find the bounding box of the vertices v.
+    // r1 -------
+    //   |   /\  |
+    //   |  /  \ |
+    //   | /____\|
+    //    ------- r2
 
     Vector3 recordminV = new Vector3(0);
     Vector3 recordmaxV = new Vector3(999);
-    float minX = Float.POSITIVE_INFINITY, maxX = Float.NEGATIVE_INFINITY;
-    float minY = Float.POSITIVE_INFINITY, maxY = Float.NEGATIVE_INFINITY;
-    float minZ = Float.POSITIVE_INFINITY, maxZ = Float.NEGATIVE_INFINITY;
-    
-    for (Vector3 vtx : v) {
-        float x = vtx.x, y = vtx.y, z = vtx.z;
-    
-        if (x < minX) minX = x;
-        if (x > maxX) maxX = x;
-    
-        if (y < minY) minY = y;
-        if (y > maxY) maxY = y;
-    
-        if (z < minZ) minZ = z;
-        if (z > maxZ) maxZ = z;
+    float minX, minY, minZ;
+    float maxX, maxY, maxZ;
+    minX = minY = minZ = Float.MAX_VALUE;
+    maxX = maxY = maxZ  = Float.MIN_VALUE;
+    for(Vector3 vec : v){
+      minX = min(vec.x, minX);
+      minY = min(vec.y, minY);
+      minZ = min(vec.z,  minZ);
+      maxX = max(vec.x, maxX);
+      maxY = max(vec.y, maxY);
+      maxZ = max(vec.z, maxZ);
+      
     }
-    recordminV = new Vector3(minX, minY, minZ);
-    recordmaxV = new Vector3(maxX, maxY, maxZ);
+    
     Vector3[] result = { recordminV, recordmaxV };
     return result;
+
 }
 public boolean inside(Vector3 p, Vector3 a, Vector3 b) {
     return (b.x - a.x)*(p.y - a.y) - (b.y - a.y)*(p.x - a.x) <= 0;
@@ -84,7 +128,7 @@ Vector3 intersection(Vector3 p, Vector3 q, Vector3 a, Vector3 b) {
 
     float det = A1 * B2 - A2 * B1;
     if (Math.abs(det) < 1e-6) {
-        return p;
+        return p; // Lines are parallel, return one point arbitrarily
     }
 
     float x = (B2 * C1 - B1 * C2) / det;
@@ -92,28 +136,19 @@ Vector3 intersection(Vector3 p, Vector3 q, Vector3 a, Vector3 b) {
 
     return new Vector3(x, y, 0);
 }
+
 public Vector3[] Sutherland_Hodgman_algorithm(Vector3[] points, Vector3[] boundary) {
-   
-    for(int i= 0 ; i< boundary.length; i++){
-       Vector3 tmp =  boundary[i];
-       println("V.x | " + tmp.x + 
-       " V.y| "+  tmp.y +  " V.z| " + tmp.z);
-       if(i == boundary.length-1){
-         println("end");
-       }
-    }
     ArrayList<Vector3> input = new ArrayList<Vector3>();
     ArrayList<Vector3> output = new ArrayList<Vector3>();
     for (int i = 0; i < points.length; i += 1) {
         input.add(points[i]);
     }
-
+    
     // TODO HW2
     // You need to implement the Sutherland Hodgman Algorithm in this section.
     // The function you pass 2 parameter. One is the vertexes of the shape "points".
-    // And the other is the vertexes of the "boundary".
-    // The output is the vertexes of the polygon.
-    
+    // And the other is the vertices of the "boundary".
+    // The output is the vertices of the polygon.
     int n  = points.length;
     int bn = boundary.length;
     for(int i = 0; i< bn; i++){
@@ -144,7 +179,6 @@ public Vector3[] Sutherland_Hodgman_algorithm(Vector3[] points, Vector3[] bounda
       }
       input = new ArrayList<Vector3>(output);
     }
-    
     output = input;
     Vector3[] result = new Vector3[output.size()];
     for (int i = 0; i < result.length; i += 1) {
@@ -152,48 +186,4 @@ public Vector3[] Sutherland_Hodgman_algorithm(Vector3[] points, Vector3[] bounda
     }
     
     return result;
-}
-
-public float getDepth(float x, float y, Vector3[] vertex) {
-    // TODO HW3
-    // You need to calculate the depth (z) in the triangle (vertex) based on the
-    // positions x and y. and return the z value;
-    Vector3 v0 = vertex[1].sub(vertex[0]);
-    Vector3 v1 = vertex[2].sub(vertex[0]);
-    Vector3 n = Vector3.cross(v0,v1);
-    float A = n.x;
-    float B = n.y;
-    float C = n.z;
-    float D = -(A * vertex[0].x + B * vertex[0].y + C * vertex[0].z);
-
-    return -(A*x + B*y + D) / C;
-}
-
-float[] barycentric(Vector3 P, Vector4[] verts) {
-
-    Vector3 A = verts[0].homogenized();
-    Vector3 B = verts[1].homogenized();
-    Vector3 C = verts[2].homogenized();
-
-    // TODO HW4
-    // Calculate the barycentric coordinates of point P in the triangle verts using
-    // the barycentric coordinate system.
-
-
-     float denom = (B.x - A.x) * (C.y - A.y) -
-                  (B.y - A.y) * (C.x - A.x);
-
-    if (Math.abs(denom) < 1e-6f) {
-        return new float[]{0, 0, 0}; // degenerate triangle
-    }
-
-    float alpha = ((B.x - P.x) * (C.y - P.y) -
-                   (B.y - P.y) * (C.x - P.x)) / denom;
-
-    float beta  = ((C.x - P.x) * (A.y - P.y) -
-                   (C.y - P.y) * (A.x - P.x)) / denom;
-
-    float gamma = 1.0f - alpha - beta;
-
-    return new float[]{alpha, beta, gamma};
 }

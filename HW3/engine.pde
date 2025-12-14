@@ -1,4 +1,4 @@
-public class Engine {
+  public class Engine {
     Renderer renderer;
     Inspector inspector;
     Hierarchy hierarchy;

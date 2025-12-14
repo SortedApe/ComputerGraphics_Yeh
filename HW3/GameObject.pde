@@ -78,7 +78,20 @@ public class GameObject {
                 img_pos[j] = new Vector3(map(img_pos[j].x, -1, 1, renderer_size.x, renderer_size.z),
                         map(img_pos[j].y, -1, 1, renderer_size.y, renderer_size.w), img_pos[j].z);
             }
-
+            
+            Vector3 A = img_pos[0];
+            Vector3 B = img_pos[1];
+            Vector3 C = img_pos[2];
+        
+            Vector3 AB = B.sub(A);
+            Vector3 AC = C.sub(A);
+        
+            float crossZ = AB.x * AC.y - AB.y * AC.x;
+        
+            // cull back faces (clockwise)
+            if (crossZ <=0)
+                continue;
+            
             CGLine(img_pos[0].x, img_pos[0].y, img_pos[1].x, img_pos[1].y);
             CGLine(img_pos[1].x, img_pos[1].y, img_pos[2].x, img_pos[2].y);
             CGLine(img_pos[2].x, img_pos[2].y, img_pos[0].x, img_pos[0].y);
@@ -92,8 +105,11 @@ public class GameObject {
     Matrix4 localToWorld() {
         // TODO HW3
         // You need to calculate the model Matrix here.
-
-        return Matrix4.Identity();
+        return Matrix4.Trans(transform.position)
+        .mult(Matrix4.RotZ(transform.rotation.z))
+        .mult(Matrix4.RotX(transform.rotation.x))
+        .mult(Matrix4.RotY(transform.rotation.y))
+        .mult(Matrix4.Scale(transform.scale));
 
     }
 

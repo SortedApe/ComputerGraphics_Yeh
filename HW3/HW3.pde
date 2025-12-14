@@ -62,8 +62,18 @@ String selectFile() {
 void cameraControl(){
     // You can write your own camera control function here.
     // Use setPositionOrientation(Vector3 position,Vector3 lookat) to modify the ViewMatrix.
-    // Hint : Use keyboard event and mouse click event to change the position of the camera.       
-        
+    // Hint : Use keyboard event and mouse click event to change the position of the camera
+    if (keyPressed) {
+    if (keyCode == UP) {
+      cam_position.y--;
+    } else if (keyCode == DOWN) {
+      cam_position.y++;
+    } else if (keyCode == LEFT) {
+      cam_position.x--;
+    } else if (keyCode == RIGHT) {
+      cam_position.x++;
+    }
+  }
     main_camera.setPositionOrientation(cam_position, new Vector3(0,0,1));
 
 }
